@@ -10,7 +10,10 @@ import edu.kit.kastel.vads.compiler.backend.aasm.AasmRegisterAllocator;
 import edu.kit.kastel.vads.compiler.backend.regalloc.Register;
 import edu.kit.kastel.vads.compiler.backend.regalloc.RegisterAllocator;
 import edu.kit.kastel.vads.compiler.ir.IrGraph;
+import edu.kit.kastel.vads.compiler.ir.node.Block;
 import edu.kit.kastel.vads.compiler.ir.node.Node;
+import edu.kit.kastel.vads.compiler.ir.node.ProjNode;
+import edu.kit.kastel.vads.compiler.ir.node.StartNode;
 
 
 public class X86CodeGenerator implements CodeGenerator {
@@ -56,7 +59,11 @@ public class X86CodeGenerator implements CodeGenerator {
 
         // TODO: implement code generation
         switch (node) {
-            default:
+            case Block _, ProjNode _, StartNode _ -> {
+                // do nothing, skip line break
+                return;
+            }
+            default ->
                 throw new UnsupportedOperationException("Codegeneration for '" + node.toString() + "' is not implemented.");
         }
     }
