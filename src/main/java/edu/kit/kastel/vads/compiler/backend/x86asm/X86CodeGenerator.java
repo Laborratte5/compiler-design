@@ -11,8 +11,10 @@ import edu.kit.kastel.vads.compiler.backend.regalloc.Register;
 import edu.kit.kastel.vads.compiler.backend.regalloc.RegisterAllocator;
 import edu.kit.kastel.vads.compiler.ir.IrGraph;
 import edu.kit.kastel.vads.compiler.ir.node.Block;
+import edu.kit.kastel.vads.compiler.ir.node.ConstIntNode;
 import edu.kit.kastel.vads.compiler.ir.node.Node;
 import edu.kit.kastel.vads.compiler.ir.node.ProjNode;
+import edu.kit.kastel.vads.compiler.ir.node.ReturnNode;
 import edu.kit.kastel.vads.compiler.ir.node.StartNode;
 
 
@@ -59,6 +61,8 @@ public class X86CodeGenerator implements CodeGenerator {
 
         // TODO: implement code generation
         switch (node) {
+            case ConstIntNode c -> constIntNode(builder, registers, c);
+            case ReturnNode r -> returnNode(builder, registers, r);
             case Block _, ProjNode _, StartNode _ -> {
                 // do nothing, skip line break
                 return;
@@ -66,6 +70,20 @@ public class X86CodeGenerator implements CodeGenerator {
             default ->
                 throw new UnsupportedOperationException("Codegeneration for '" + node.toString() + "' is not implemented.");
         }
+        builder.append("\n");
+    }
+
+    private static void returnNode(StringBuilder builder, Map<Node, Register> registers, ReturnNode r) {
+        builder.repeat(" ", 2)
+            .append("ret");
+    }
+
+    private static void constIntNode(StringBuilder builder, Map<Node, Register> registers, ConstIntNode c) {
+        builder.repeat(" ", 2)
+            .append("mov $")
+            .append(c.value())
+            .append(",")
+            .append(registers.get(c));
     }
 
 }
