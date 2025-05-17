@@ -1,5 +1,7 @@
 package edu.kit.kastel.vads.compiler.backend.x86asm;
 
+import static edu.kit.kastel.vads.compiler.ir.util.NodeSupport.predecessorSkipProj;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +76,13 @@ public class X86CodeGenerator implements CodeGenerator {
     }
 
     private static void returnNode(StringBuilder builder, Map<Node, Register> registers, ReturnNode r) {
+        builder.repeat(" ", 2)
+            .append("mov ")
+            .append(registers.get(predecessorSkipProj(r, ReturnNode.RESULT)))
+            .append(",")
+            .append(registers.get(r))
+            .append("\n");
+
         builder.repeat(" ", 2)
             .append("ret");
     }
